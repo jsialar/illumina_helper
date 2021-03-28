@@ -9,7 +9,8 @@ using Kbg.NppPluginNET.PluginInfrastructure;
 using System.Xml;
 using System.Globalization;
 using System.Collections.Generic;
-using runparameters; 
+using runparameters;
+using System.Configuration;
 
 
 namespace Kbg.NppPluginNET
@@ -61,6 +62,8 @@ namespace Kbg.NppPluginNET
             PluginBase.SetCommand(0, "Parse runparameters", parse_runparameters.ProcessXML, new ShortcutKey(false, false, false, Keys.None));
             PluginBase.SetCommand(1, "Settings", process_settings);
             PluginBase.SetCommand(2, "About", about);
+            PluginBase.SetCommand(3, "debug", debug);
+
             idMyDlg = 1;
         }
 
@@ -98,6 +101,15 @@ Version {version}
 Jaren Junren Sia 2021
 Illumina APJ-RIS
 ", "About");
+        }
+
+        internal static void debug()
+        {
+
+            //var appConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+            //var apploc= System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string msg= settings.runparameters_settings;
+            MessageBox.Show(msg, "debug");
         }
 
         internal static void myDockableDialog()
