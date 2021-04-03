@@ -13,9 +13,8 @@ using System.Globalization;
 using Kbg.NppPluginNET;
 using Kbg.NppPluginNET.Properties;
 
-using runparameters;
 
-namespace runparameters
+namespace Kbg.NppPluginNET
 {
     static class parse_runparameters
     {
@@ -25,6 +24,9 @@ namespace runparameters
 
         static XmlDocument doc = new XmlDocument();
         static CultureInfo enUs = new CultureInfo("en-US");
+
+        static string serial_path(string con)
+        { return $"/RunParameters/{con}/SerialNumber"; }
 
         static string exp_path(string con)
         { return $"/RunParameters/{con}/ExpirationDate"; }
@@ -75,49 +77,168 @@ namespace runparameters
             },
         };
 
-            static Dictionary<string, (string con, string part, string lot, string xpath)[]> consum_path = new Dictionary<string, (string con, string part, string lot, string xpath)[]>()
-        {
+            static Dictionary<string, (string con, Dictionary<string, string> dict)[]> consum_dict = new Dictionary<string, (string con, Dictionary<string, string> dict)[]>
+            {
             ["MiSeq"] = new[] { 
-                ("Flowcell", part_path("FlowcellRFIDTag"), lot_path("FlowcellRFIDTag"), exp_path("FlowcellRFIDTag")),
-                ("PR2", part_path("PR2BottleRFIDTag"), lot_path("PR2BottleRFIDTag"),exp_path("PR2BottleRFIDTag")),
-                ("ReagentKit", part_path("ReagentKitRFIDTag"), lot_path("ReagentKitRFIDTag"),exp_path("ReagentKitRFIDTag"))
-            },
-            ["iSeq"] = new[] { 
-                ("Flowcell", part_path("FlowcellEEPROMTag"), lot_path("FlowcellEEPROMTag"), exp_path("FlowcellEEPROMTag")),
-                ("ReagentKit", part_path("ReagentKitRFIDTag"), lot_path("ReagentKitRFIDTag"), exp_path("ReagentKitRFIDTag"))
-            },
+                ("Flowcell", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("SerialNumber"),
+                    ["Lot#"]=lot_path("FlowcellRFIDTag"),
+                    ["Part#"]=part_path("FlowcellRFIDTag"),
+                    ["Expiry date"]=exp_path("FlowcellRFIDTag")
+                }),
+                ("PR2", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("PR2BottleRFIDTag"),
+                    ["Lot#"]=lot_path("PR2BottleRFIDTag"),
+                    ["Part#"]=part_path("PR2BottleRFIDTag"),
+                    ["Expiry date"]=exp_path("PR2BottleRFIDTag")
+                }),
+                ("ReagentKit", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("ReagentKitRFIDTag"),
+                    ["Lot#"]=lot_path("ReagentKitRFIDTag"),
+                    ["Part#"]=part_path("ReagentKitRFIDTag"),
+                    ["Expiry date"]=exp_path("ReagentKitRFIDTag")
+                })},
+            ["iSeq"] = new[] {
+                ("Flowcell", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("FlowcellEEPROMTag"),
+                    ["Lot#"]=lot_path("FlowcellEEPROMTag"),
+                    ["Part#"]=part_path("FlowcellEEPROMTag"),
+                    ["Expiry date"]=exp_path("FlowcellEEPROMTag")
+                }),
+                ("ReagentKit", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("ReagentKitRFIDTag"),
+                    ["Lot#"]=lot_path("ReagentKitRFIDTag"),
+                    ["Part#"]=part_path("ReagentKitRFIDTag"),
+                    ["Expiry date"]=exp_path("ReagentKitRFIDTag")
+                })},
             ["MiniSeq"] = new[] {
-                ("Flowcell", part_path("FlowCellRfidTag"), lot_path("FlowCellRfidTag"), exp_path("FlowCellRfidTag")),
-                ("ReagentKit", part_path("ReagentKitRfidTag"), lot_path("ReagentKitRfidTag"), exp_path("ReagentKitRfidTag"))
-            },
+                ("Flowcell", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("FlowCellRfidTag"),
+                    ["Lot#"]=lot_path("FlowCellRfidTag"),
+                    ["Part#"]=part_path("FlowCellRfidTag"),
+                    ["Expiry date"]=exp_path("FlowCellRfidTag")
+                }),
+                ("ReagentKit", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("ReagentKitRfidTag"),
+                    ["Lot#"]=lot_path("ReagentKitRfidTag"),
+                    ["Part#"]=part_path("ReagentKitRfidTag"),
+                    ["Expiry date"]=exp_path("ReagentKitRfidTag")
+                })},
             ["NextSeq 500/550"] = new[] {
-                ("Flowcell", part_path("FlowCellRfidTag"), lot_path("FlowCellRfidTag"), exp_path("FlowCellRfidTag")),
-                ("PR2", part_path("PR2BottleRfidTag"), lot_path("PR2BottleRfidTag"), exp_path("PR2BottleRfidTag")),
-                ("ReagentKit", part_path("ReagentKitRfidTag"), lot_path("ReagentKitRfidTag"), exp_path("ReagentKitRfidTag"))
-            },
+                  ("Flowcell", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("FlowCellRfidTag"),
+                    ["Lot#"]=lot_path("FlowCellRfidTag"),
+                    ["Part#"]=part_path("FlowCellRfidTag"),
+                    ["Expiry date"]=exp_path("FlowCellRfidTag")
+                }),
+                ("PR2", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("PR2BottleRfidTag"),
+                    ["Lot#"]=lot_path("PR2BottleRfidTag"),
+                    ["Part#"]=part_path("PR2BottleRfidTag"),
+                    ["Expiry date"]=exp_path("PR2BottleRfidTag")
+                }),
+                ("ReagentKit", new Dictionary<string, string> {
+                    ["Serial#"]=serial_path("ReagentKitRfidTag"),
+                    ["Lot#"]=lot_path("ReagentKitRfidTag"),
+                    ["Part#"]=part_path("ReagentKitRfidTag"),
+                    ["Expiry date"]=exp_path("ReagentKitRfidTag")
+                })},
             ["NextSeq 1000/2000"] = new[] {
-                ("Flowcell","/RunParameters/FlowCellPartNumber", "/RunParameters/FlowCellLotNumber", "/RunParameters/FlowCellExpirationDate"),
-                ("Cartridge","/RunParameters/CartridgePartNumber", "/RunParameters/CartridgeLotNumber", "/RunParameters/CartridgeExpirationDate")
-            },
+                  ("Flowcell", new Dictionary<string, string> {
+                    ["Serial#"]="/RunParameters/FlowCellSerialNumber",
+                    ["Lot#"]="/RunParameters/FlowCellLotNumber",
+                    ["Part#"]="/RunParameters/FlowCellPartNumber",
+                    ["Expiry date"]="/RunParameters/FlowCellExpirationDate"
+                }),
+                   ("Cartridge", new Dictionary<string, string> {
+                    ["Serial#"]="/RunParameters/CartridgeSerialNumber",
+                    ["Lot#"]="/RunParameters/CartridgeLotNumber",
+                    ["Part#"]="/RunParameters/CartridgePartNumber",
+                    ["Expiry date"]="/RunParameters/CartridgeExpirationDate"
+                })},
             ["NovaSeq"] = new[] {
-                ("Flowcell", "/RunParameters/RfidsInfo/FlowCellPartNumber", "/RunParameters/RfidsInfo/FlowCellLotNumber", "/RunParameters/RfidsInfo/FlowCellExpirationdate"),
-                ("SBS","/RunParameters/RfidsInfo/SbsPartNumber", "/RunParameters/RfidsInfo/SbsLotNumber", "/RunParameters/RfidsInfo/SbsExpirationdate"),
-                ("Clustering","/RunParameters/RfidsInfo/ClusterPartNumber", "/RunParameters/RfidsInfo/ClusterLotNumber", "/RunParameters/RfidsInfo/ClusterExpirationdate"),
-                ("Buffer","/RunParameters/RfidsInfo/BufferPartNumber", "/RunParameters/RfidsInfo/BufferLotNumber", "/RunParameters/RfidsInfo/BufferExpirationdate")
-            }
+                ("Flowcell", new Dictionary<string, string> {
+                    ["Serial#"]="/RunParameters/RfidsInfo/FlowCellSerialBarcode",
+                    ["Lot#"]="/RunParameters/RfidsInfo/FlowCellLotNumber",
+                    ["Part#"]="/RunParameters/RfidsInfo/FlowCellPartNumber",
+                    ["Expiry date"]="/RunParameters/RfidsInfo/FlowCellExpirationdate"
+                }),
+                ("SBS", new Dictionary<string, string> {
+                    ["Serial#"]="/RunParameters/RfidsInfo/SbsSerialBarcode",
+                    ["Lot#"]="/RunParameters/RfidsInfo/SbsLotNumber",
+                    ["Part#"]="/RunParameters/RfidsInfo/SbsPartNumber",
+                    ["Expiry date"]="/RunParameters/RfidsInfo/SbsExpirationdate"
+                }),
+                ("Clustering", new Dictionary<string, string> {
+                    ["Serial#"]="/RunParameters/RfidsInfo/ClusterSerialBarcode",
+                    ["Lot#"]="/RunParameters/RfidsInfo/ClusterLotNumber",
+                    ["Part#"]="/RunParameters/RfidsInfo/ClusterPartNumber",
+                    ["Expiry date"]="/RunParameters/RfidsInfo/ClusterExpirationdate"
+                }),
+                 ("Buffer", new Dictionary<string, string> {
+                    ["Serial#"]="/RunParameters/RfidsInfo/BufferSerialBarcode",
+                    ["Lot#"]="/RunParameters/RfidsInfo/BufferLotNumber",
+                    ["Part#"]="/RunParameters/RfidsInfo/BufferPartNumber",
+                    ["Expiry date"]="/RunParameters/RfidsInfo/BufferExpirationdate"
+                })}
         };
 
-        static void write_info(string platformname, string tag, Dictionary<string, Dictionary<string, string>> info_dict)
+        static void write_con(DateTime parsed_start_date, (string con, Dictionary<string, string> dict)[] platformarray)
+        {
+            foreach (var i in platformarray)
+            {
+                Font boldUnderFont = new Font(Main.frmMyDlg.parsedText.Font, FontStyle.Bold | FontStyle.Underline);
+                Main.frmMyDlg.parsedText.SelectionFont = boldUnderFont;
+                Main.frmMyDlg.parsedText.AppendText(i.con);
+                Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
+                foreach (string tag in Main.settings.checkedList_con.CheckedItems)
+                {
+                    if (tag=="Expiry date")
+                    {
+                        XmlNode _con = doc.SelectSingleNode(i.dict[tag]);
+                        DateTime parsed_expiry_date;
+                        if (_con == null)
+                        {
+                            Main.frmMyDlg.parsedText.AppendText("Cannot find expiration date");
+                            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
+
+                        }
+                        else
+                        {
+                            try
+                            {
+                                parsed_expiry_date = DateTime.Parse(_con.InnerText, enUs);
+                            }
+                            catch (Exception)
+                            {
+                                Main.frmMyDlg.parsedText.AppendText("Cannot parse expiration date");
+                                Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
+                                continue;
+                            }
+                            //daystoexpiry = (parsed_con - parsed_start_date).Days;
+                            write_expiry(i.con, parsed_expiry_date, parsed_start_date);
+                        }
+
+                    }
+                    else
+                    {
+                        write_info(tag, i.dict, false);
+                    }
+                    
+                }
+            }
+        }
+        static void write_info(string tag, Dictionary<string, string> platform_dict, bool literal)
         {
          
             string item_info;
-            if (info_dict[platformname].TryGetValue(tag, out string item_info_path))
+            if (platform_dict.TryGetValue(tag, out string item_info_path))
             {
-                 item_info = doc.Getstring(item_info_path);
+                 item_info = literal? item_info_path: doc.Getstring(item_info_path);
             }
             else
             {
-                item_info = "Not available for this platform";
+                item_info = "Not available";
             }
             Main.frmMyDlg.parsedText.AppendText($"{tag}: {item_info}");
             Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
@@ -199,7 +320,7 @@ namespace runparameters
             Main.frmMyDlg.parsedText.SelectionColor = textcolor;
             Main.frmMyDlg.parsedText.AppendText(expiry_date.ToString("dd-MMM-yyyy"));
             //Main.frmMyDlg.parsedText.AppendText($"{daystoexpiry.ToString()} days {preposition} expiry");
-            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine + Environment.NewLine);
+            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
         }
 
         internal static void ProcessXML()
@@ -229,70 +350,33 @@ namespace runparameters
                 return; 
             }
             DateTime parsed_start_date = get_startdate(platformname);
-            DateTime parsed_expiry_date;
-            string parsed_part;
-            string parsed_lot;
             Main.frmMyDlg.parsedText.Clear();
             string runid_path = platformname == "NovaSeq" || platformname == "iSeq" ? "/RunParameters/RunId" : 
                 platformname== "NextSeq 1000/2000" ? "/RunParameters/BaseSpaceRunId" : "/RunParameters/RunID";
-            string runid;
 
-            runid = doc.SelectSingleNode(runid_path).InnerText;
-
-            Main.frmMyDlg.parsedText.AppendText("Platform: " + platformname);
-            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-            Main.frmMyDlg.parsedText.AppendText("ID: "+ runid);
-            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-            Main.frmMyDlg.parsedText.AppendText("Name: " + doc.SelectSingleNode("/RunParameters/ExperimentName").InnerText);
-            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-            Main.frmMyDlg.parsedText.AppendText("Start date: " + parsed_start_date.ToString("dd-MMM-yyyy"));
-            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine+ Environment.NewLine);
-
-            foreach ((string con, string part, string lot, string xpath) i in consum_path[platformname])
+            var header_dict = new Dictionary<string, string>
             {
-                parsed_part = doc.Getstring(i.part);
-                parsed_lot = doc.Getstring(i.lot);
-
-                    
-                Font boldUnderFont = new Font(Main.frmMyDlg.parsedText.Font, FontStyle.Bold | FontStyle.Underline);
-                Main.frmMyDlg.parsedText.SelectionFont = boldUnderFont;
-                Main.frmMyDlg.parsedText.AppendText(i.con);
-                Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-                Main.frmMyDlg.parsedText.AppendText("Part no: " + parsed_part);
-                Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-                Main.frmMyDlg.parsedText.AppendText("Lot no: "+parsed_lot);
-                Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-
-                XmlNode _con = doc.SelectSingleNode(i.xpath);
-                if (_con == null)
-                {
-                    Main.frmMyDlg.parsedText.AppendText("Cannot find expiration date");
-                    Main.frmMyDlg.parsedText.AppendText(Environment.NewLine + Environment.NewLine);
-                }
-                else
-                {
-                    try
-                    {
-                        parsed_expiry_date = DateTime.Parse(_con.InnerText, enUs);
-                    }
-                    catch (Exception)
-                    {
-                        Main.frmMyDlg.parsedText.AppendText("Cannot parse expiration date");
-                        Main.frmMyDlg.parsedText.AppendText(Environment.NewLine + Environment.NewLine);
-                        continue;
-                    }
-                    //daystoexpiry = (parsed_con - parsed_start_date).Days;
-                    write_expiry(i.con, parsed_expiry_date, parsed_start_date);
-                }
-
-
+                {"Platform", platformname},
+                {"RunID", doc.SelectSingleNode(runid_path).InnerText},
+                {"ExperimentName", doc.SelectSingleNode("/RunParameters/ExperimentName").InnerText},
+                {"StartDate",  parsed_start_date.ToString("dd-MMM-yyyy")}
+            };
+            
+            //Write header
+            foreach (string tag in Main.settings.checkedList_header.CheckedItems)
+            {
+                write_info(tag, header_dict, true);
             }
+            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
+
+            //Write consumables
+            write_con(parsed_start_date, consum_dict[platformname]);
+            Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
 
             //Write additional info
-
-            foreach (string i in Main.settings.checkedListBox1.CheckedItems)
+            foreach (string i in Main.settings.checkedList_additional.CheckedItems)
             {
-                write_info(platformname, i, add_info_dict);
+                write_info(i, add_info_dict[platformname], false);
             }
             
              //notepad.FileNew();

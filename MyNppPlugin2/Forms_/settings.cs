@@ -4,11 +4,11 @@ using System;
 
 namespace Kbg.NppPluginNET
 {
-    public partial class SettingsForm : Form
+    public partial class Settings : Form
         
     {
         public string runparameters_settings;
-        public SettingsForm()
+        public Settings()
         {
             InitializeComponent();
             
@@ -19,7 +19,7 @@ namespace Kbg.NppPluginNET
            
             foreach (int index in runparameters_index)
             {
-                checkedList_additional.SetItemChecked(index, true);
+                checkedListBox1.SetItemChecked(index, true);
             } 
             
             

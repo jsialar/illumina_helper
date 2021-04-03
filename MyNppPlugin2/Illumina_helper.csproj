@@ -92,6 +92,8 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\Settings1.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Forms\settings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,7 +160,8 @@
   <Import Project="$(MSBuildProjectDirectory)\PluginInfrastructure\DllExport\NppPlugin.DllExport.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "C:\Program Files (x86)\Notepad++\plugins\$(TargetName)\"
-copy "$(TargetPath)" "C:\Program Files (x86)\Notepad++\plugins\$(TargetName)\"</PostBuildEvent>
+copy "$(TargetPath)" "C:\Program Files (x86)\Notepad++\plugins\$(TargetName)\"
+copy $(ProjectDir)\Illumina_helper.dll.config "C:\Program Files (x86)\Notepad++\plugins\$(TargetName)\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

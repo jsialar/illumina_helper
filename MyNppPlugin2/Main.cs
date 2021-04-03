@@ -9,7 +9,7 @@ using Kbg.NppPluginNET.PluginInfrastructure;
 using System.Xml;
 using System.Globalization;
 using System.Collections.Generic;
-using runparameters;
+using Kbg.NppPluginNET;
 using System.Configuration;
 
 
@@ -21,14 +21,14 @@ namespace Kbg.NppPluginNET
         static string iniFilePath = null;
         static bool someSetting = false;
         internal static frmMyDlg frmMyDlg = null;
-        internal static Settings settings = new Settings();
+        internal static SettingsForm settings = null;
         static int idMyDlg = -1;
         //static Bitmap tbBmp = Properties.Resources.star;
         static Bitmap tbBmp = Properties.Resources.ilmn_icon_draw;
         static Bitmap tbBmp_tbTab = Properties.Resources.star_bmp;
         static Icon tbIcon = null;
         static IScintillaGateway editor = new ScintillaGateway(PluginBase.GetCurrentScintilla());
-        static INotepadPPGateway notepad = new NotepadPPGateway();
+        //static INotepadPPGateway notepad = new NotepadPPGateway();
 
         public static void OnNotification(ScNotification notification)
         {
@@ -42,7 +42,7 @@ namespace Kbg.NppPluginNET
             // { ... }
             if (notification.Header.Code == (uint)NppMsg.NPPN_BUFFERACTIVATED)
             {
-                if (frmMyDlg != null)
+                if (frmMyDlg != null && frmMyDlg.Visible)
                 {
                     parse_runparameters.ProcessXML();
                 }
@@ -62,8 +62,9 @@ namespace Kbg.NppPluginNET
             PluginBase.SetCommand(0, "Parse runparameters", parse_runparameters.ProcessXML, new ShortcutKey(false, false, false, Keys.None));
             PluginBase.SetCommand(1, "Settings", process_settings);
             PluginBase.SetCommand(2, "About", about);
+        #if DEBUG
             PluginBase.SetCommand(3, "debug", debug);
-
+        #endif
             idMyDlg = 1;
         }
 
@@ -85,10 +86,41 @@ namespace Kbg.NppPluginNET
 
         internal static void process_settings()
         {
-            if (settings.ShowDialog()== DialogResult.OK)
+            if (settings == null)
             {
-                parse_runparameters.ProcessXML();
+                settings = new SettingsForm();
+                  
             }
+              
+            // Get old values for checkedlistboxes
+            CheckedListBox[] checkedboxes_arr = {settings.checkedList_header, settings.checkedList_con, settings.checkedList_additional };
+            CheckedListBox.CheckedIndexCollection[] current_indices = new CheckedListBox.CheckedIndexCollection[checkedboxes_arr.Length];
+            
+            for (int i =0; i < checkedboxes_arr.Length; i++)
+            {
+                current_indices[i] = checkedboxes_arr[i].CheckedIndices;
+            }
+
+            if (settings.ShowDialog() == DialogResult.OK)
+            {
+
+                if (frmMyDlg != null && frmMyDlg.Visible)
+                {
+                    parse_runparameters.ProcessXML();
+                }
+            }
+            else 
+            {
+                for (int i = 0; i < checkedboxes_arr.Length; i++)
+                {
+                    foreach (int j in current_indices[i])
+                    {
+                        checkedboxes_arr[i].SetItemChecked(j, true);
+                    }
+                }
+            }
+
+
         }
 
         internal static void about()
@@ -102,22 +134,26 @@ Jaren Junren Sia 2021
 Illumina APJ-RIS
 ", "About");
         }
-
+#if DEBUG
         internal static void debug()
         {
 
             //var appConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
             //var apploc= System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string msg= settings.runparameters_settings;
+            //string msg= settings.runparameters_settings;
+            StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
+            string msg = sbIniFilePath.ToString();
             MessageBox.Show(msg, "debug");
         }
+
+#endif
 
         internal static void myDockableDialog()
         {
             if (frmMyDlg == null)
             {
                 frmMyDlg = new frmMyDlg();
-
                 using (Bitmap newBmp = new Bitmap(16, 16))
                 {
                     Graphics g = Graphics.FromImage(newBmp);
