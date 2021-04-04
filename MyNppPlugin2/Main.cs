@@ -18,16 +18,16 @@ namespace Kbg.NppPluginNET
     class Main
     {
         internal const string PluginName = "Illumina Helper";
-        static string iniFilePath = null;
-        static bool someSetting = false;
         internal static frmMyDlg frmMyDlg = null;
-        internal static SettingsForm settings = null;
+        internal static SettingsForm settingsform = null;
+        internal static Settings settings = new Settings();
         static int idMyDlg = -1;
         //static Bitmap tbBmp = Properties.Resources.star;
         static Bitmap tbBmp = Properties.Resources.ilmn_icon_draw;
         static Bitmap tbBmp_tbTab = Properties.Resources.star_bmp;
         static Icon tbIcon = null;
         static IScintillaGateway editor = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+       
         //static INotepadPPGateway notepad = new NotepadPPGateway();
 
         public static void OnNotification(ScNotification notification)
@@ -52,12 +52,7 @@ namespace Kbg.NppPluginNET
 
         internal static void CommandMenuInit()
         {
-            StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
-            Win32.SendMessage(PluginBase.nppData._nppHandle, (uint) NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
-            iniFilePath = sbIniFilePath.ToString();
-            if (!Directory.Exists(iniFilePath)) Directory.CreateDirectory(iniFilePath);
-            iniFilePath = Path.Combine(iniFilePath, PluginName + ".ini");
-            someSetting = (Win32.GetPrivateProfileInt("SomeSection", "SomeKey", 0, iniFilePath) != 0);
+
 
             PluginBase.SetCommand(0, "Parse runparameters", parse_runparameters.ProcessXML, new ShortcutKey(false, false, false, Keys.None));
             PluginBase.SetCommand(1, "Settings", process_settings);
@@ -81,19 +76,19 @@ namespace Kbg.NppPluginNET
 
         internal static void PluginCleanUp()
         {
-            Win32.WritePrivateProfileString("SomeSection", "SomeKey", someSetting ? "1" : "0", iniFilePath);
+            settings.Save();
         }
 
         internal static void process_settings()
         {
-            if (settings == null)
+            if (settingsform == null)
             {
-                settings = new SettingsForm();
+                settingsform = new SettingsForm(settings.options);
                   
             }
               
             // Get old values for checkedlistboxes
-            CheckedListBox[] checkedboxes_arr = {settings.checkedList_header, settings.checkedList_con, settings.checkedList_additional };
+            CheckedListBox[] checkedboxes_arr = {settingsform.checkedList_header, settingsform.checkedList_con, settingsform.checkedList_additional };
             CheckedListBox.CheckedIndexCollection[] current_indices = new CheckedListBox.CheckedIndexCollection[checkedboxes_arr.Length];
             
             for (int i =0; i < checkedboxes_arr.Length; i++)
@@ -101,7 +96,7 @@ namespace Kbg.NppPluginNET
                 current_indices[i] = checkedboxes_arr[i].CheckedIndices;
             }
 
-            if (settings.ShowDialog() == DialogResult.OK)
+            if (settingsform.ShowDialog() == DialogResult.OK)
             {
 
                 if (frmMyDlg != null && frmMyDlg.Visible)

@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using System.Configuration;
+using System.Reflection;
 using System;
 
 namespace Kbg.NppPluginNET
@@ -8,13 +8,25 @@ namespace Kbg.NppPluginNET
         
     {
         public string runparameters_settings;
-        public SettingsForm()
+        public SettingsForm(Settings.Options options)
         {
             InitializeComponent();
-            
-            var appConfig  = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var appSettings = appConfig.AppSettings;
-            this.runparameters_settings = appSettings.Settings["runparameters"].Value;
+
+            object options = options;
+            foreach (FieldInfo field in options.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+
+                if (field.Name.StartsWith("checkedList"))
+                {
+                    string[] items_array = field.GetValue(options);
+
+                }
+
+
+
+                this.options = (Options)options;
+            }
+
             int[] runparameters_index=Array.ConvertAll(runparameters_settings.Split(','), Int32.Parse);
            
             foreach (int index in runparameters_index)

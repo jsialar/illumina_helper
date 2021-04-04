@@ -191,7 +191,7 @@ namespace Kbg.NppPluginNET
                 Main.frmMyDlg.parsedText.SelectionFont = boldUnderFont;
                 Main.frmMyDlg.parsedText.AppendText(i.con);
                 Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-                foreach (string tag in Main.settings.checkedList_con.CheckedItems)
+                foreach (string tag in Main.settingsform.checkedList_con.CheckedItems)
                 {
                     if (tag=="Expiry date")
                     {
@@ -363,7 +363,7 @@ namespace Kbg.NppPluginNET
             };
             
             //Write header
-            foreach (string tag in Main.settings.checkedList_header.CheckedItems)
+            foreach (string tag in Main.settingsform.checkedList_header.CheckedItems)
             {
                 write_info(tag, header_dict, true);
             }
@@ -374,7 +374,7 @@ namespace Kbg.NppPluginNET
             Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
 
             //Write additional info
-            foreach (string i in Main.settings.checkedList_additional.CheckedItems)
+            foreach (string i in Main.settingsform.checkedList_additional.CheckedItems)
             {
                 write_info(i, add_info_dict[platformname], false);
             }
