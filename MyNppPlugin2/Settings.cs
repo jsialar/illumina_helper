@@ -11,7 +11,7 @@ namespace Kbg.NppPluginNET
 {
     public class Settings
     {
-        public struct Options
+        public class Options
         {
             public string[] checkedList_header;
             public string[] checkedList_con;
@@ -40,13 +40,12 @@ namespace Kbg.NppPluginNET
         }
         public void Load()
         {
-            //Grab ini file settings based on struct members
-            
+           
             
             if (File.Exists(iniFilePath))
             {
                 object options = this.options;
-                foreach (FieldInfo field in this.options.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                foreach (FieldInfo field in this.options.GetType().GetFields())
                 {
 
                     if (field.FieldType == typeof(string[]))
@@ -77,16 +76,39 @@ namespace Kbg.NppPluginNET
         public void Save()
         {
             //Save ini file settings based on struct members
-            foreach (FieldInfo field in this.options.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (FieldInfo field in this.options.GetType().GetFields())
             {
-                var value = field.GetValue(this.options);
-                value = value != null ? value : "";
+                string[] value = (string[]) field.GetValue(this.options);
+                
                 if (field.FieldType == typeof(string[]))
                 {
-                    Win32.WritePrivateProfileString(this.assemblyName, field.Name, String.Join(",", value), iniFilePath);
+                    string towrite = String.Join(",", value);
+                    Win32.WritePrivateProfileString(this.assemblyName, field.Name, towrite, iniFilePath);
                 }
             }
         }
+        public void Update(ref SettingsForm settingsForm)
+        {
+
+            foreach (FieldInfo field in settingsForm.GetType().GetFields())
+            {
+
+                if (field.Name.StartsWith("checkedList"))
+                {
+                    System.Windows.Forms.CheckedListBox checkedlistbox = (System.Windows.Forms.CheckedListBox) field.GetValue(settingsForm);
+                    string[] items_array = checkedlistbox.CheckedItems.Cast<string>().ToArray();
+
+                    this.options.GetType().GetField(field.Name).SetValue(this.options, items_array);
+
+
+
+                }
+
+            }
+
+
+        }
+
     }
 
 }

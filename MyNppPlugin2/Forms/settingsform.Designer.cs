@@ -227,14 +227,15 @@ namespace Kbg.NppPluginNET
             this.ok.Text = "Ok";
             this.ok.UseVisualStyleBackColor = true;
             // 
-            // Settings
+            // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(385, 585);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "Settings";
+            this.Name = "SettingsForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.Runparameters_tab.ResumeLayout(false);
@@ -255,12 +256,12 @@ namespace Kbg.NppPluginNET
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Button ok;
-        internal System.Windows.Forms.CheckedListBox checkedList_header;
+        public System.Windows.Forms.CheckedListBox checkedList_header;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        internal System.Windows.Forms.CheckedListBox checkedList_con;
+        public System.Windows.Forms.CheckedListBox checkedList_con;
         private System.Windows.Forms.GroupBox groupBox3;
-        internal System.Windows.Forms.CheckedListBox checkedList_additional;
+        public System.Windows.Forms.CheckedListBox checkedList_additional;
     }
 }

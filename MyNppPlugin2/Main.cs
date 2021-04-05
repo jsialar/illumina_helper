@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Kbg.NppPluginNET.PluginInfrastructure;
+using System.Reflection;
 using System.Xml;
 using System.Globalization;
 using System.Collections.Generic;
@@ -81,13 +82,12 @@ namespace Kbg.NppPluginNET
 
         internal static void process_settings()
         {
-            if (settingsform == null)
-            {
+
                 settingsform = new SettingsForm(settings.options);
-                  
-            }
-              
-            // Get old values for checkedlistboxes
+
+
+
+            /* Get old values for checkedlistboxes
             CheckedListBox[] checkedboxes_arr = {settingsform.checkedList_header, settingsform.checkedList_con, settingsform.checkedList_additional };
             CheckedListBox.CheckedIndexCollection[] current_indices = new CheckedListBox.CheckedIndexCollection[checkedboxes_arr.Length];
             
@@ -95,26 +95,21 @@ namespace Kbg.NppPluginNET
             {
                 current_indices[i] = checkedboxes_arr[i].CheckedIndices;
             }
-
-            if (settingsform.ShowDialog() == DialogResult.OK)
+            */
+            if (settingsform.ShowDialog(Control.FromHandle(PluginBase.GetCurrentScintilla())) == DialogResult.OK)
             {
-
+                settings.Update(ref settingsform);
                 if (frmMyDlg != null && frmMyDlg.Visible)
                 {
                     parse_runparameters.ProcessXML();
                 }
+                settingsform.Dispose();
             }
-            else 
+            else
             {
-                for (int i = 0; i < checkedboxes_arr.Length; i++)
-                {
-                    foreach (int j in current_indices[i])
-                    {
-                        checkedboxes_arr[i].SetItemChecked(j, true);
-                    }
-                }
+                settingsform.Dispose();
             }
-
+  
 
         }
 
