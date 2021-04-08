@@ -13,9 +13,15 @@ namespace Kbg.NppPluginNET
     {
         public class Options
         {
-            public string[] checkedList_header;
-            public string[] checkedList_con;
-            public string[] checkedList_additional;
+            public string[] checkedList_runparam_header;
+            public string[] checkedList_runparam_con;
+            public string[] checkedList_runparam_additional;
+            public string[] checkedList_finderror;
+            public string[] checkedList_finderror_allitems;
+            internal string checkedList_finderror_str
+            {
+                get => String.Join("|", checkedList_finderror);
+            }
         }
 
         public Options options = new Options();
@@ -68,40 +74,52 @@ namespace Kbg.NppPluginNET
 
         public void GetDefaultOptions()
         {
-            options.checkedList_header = new[] { "Platform", "RunID", "ExperimentName", "StartDate" };
-            options.checkedList_con = new[] { "Part#", "Lot#", "Expiry date" };
-            options.checkedList_additional = new[] { "Control software version" };
-         }
+            options.checkedList_runparam_header = new[] { "Platform", "RunID", "ExperimentName", "StartDate" };
+            options.checkedList_runparam_con = new[] { "Part#", "Lot#", "Expiry date" };
+            options.checkedList_runparam_additional = new[] { "Control software version" };
+            options.checkedList_finderror = new[] { "FATAL", "\\sERR\\s", "\\sERROR", "\\sError", "\\serror" };
+            options.checkedList_finderror_allitems = options.checkedList_finderror;
+
+        }
 
         public void Save()
         {
             //Save ini file settings based on struct members
             foreach (FieldInfo field in this.options.GetType().GetFields())
             {
-                string[] value = (string[]) field.GetValue(this.options);
-                
                 if (field.FieldType == typeof(string[]))
+
                 {
+                    string[] value = (string[])field.GetValue(this.options);
                     string towrite = String.Join(",", value);
                     Win32.WritePrivateProfileString(this.assemblyName, field.Name, towrite, iniFilePath);
                 }
             }
         }
-        public void Update(ref SettingsForm settingsForm)
+        public void Update_from_form(SettingsForm settingsForm)
         {
-
-            foreach (FieldInfo field in settingsForm.GetType().GetFields())
+            void getcheckeditems(FieldInfo form_field)
             {
-
-                if (field.Name.StartsWith("checkedList"))
+                System.Windows.Forms.CheckedListBox checkedlistbox = (System.Windows.Forms.CheckedListBox)form_field.GetValue(settingsForm);
+                string[] items_array = checkedlistbox.CheckedItems.Cast<string>().ToArray();
+                this.options.GetType().GetField(form_field.Name).SetValue(this.options, items_array);
+            }
+            void getallitems(FieldInfo form_field)
+            {
+                System.Windows.Forms.CheckedListBox checkedlistbox = (System.Windows.Forms.CheckedListBox)form_field.GetValue(settingsForm);
+                string[] items_array = checkedlistbox.Items.Cast<string>().ToArray();
+                this.options.GetType().GetField(form_field.Name+"_allitems").SetValue(this.options, items_array);
+            }
+            foreach (FieldInfo form_field in settingsForm.GetType().GetFields())
+            {
+                if (form_field.Name.StartsWith("checkedList_runparam"))
                 {
-                    System.Windows.Forms.CheckedListBox checkedlistbox = (System.Windows.Forms.CheckedListBox) field.GetValue(settingsForm);
-                    string[] items_array = checkedlistbox.CheckedItems.Cast<string>().ToArray();
-
-                    this.options.GetType().GetField(field.Name).SetValue(this.options, items_array);
-
-
-
+                    getcheckeditems(form_field);
+                }
+                else if (form_field.Name == "checkedList_finderror")
+                {
+                    getcheckeditems(form_field);
+                    getallitems(form_field);
                 }
 
             }

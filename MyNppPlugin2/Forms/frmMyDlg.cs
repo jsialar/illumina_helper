@@ -14,6 +14,9 @@ namespace Kbg.NppPluginNET
             InitializeComponent();
         }
 
-
+        private void btn_copyrunparam_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(parsedText.Text);
+        }
     }
 }

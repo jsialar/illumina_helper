@@ -191,7 +191,7 @@ namespace Kbg.NppPluginNET
                 Main.frmMyDlg.parsedText.SelectionFont = boldUnderFont;
                 Main.frmMyDlg.parsedText.AppendText(i.con);
                 Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
-                foreach (string tag in Main.settingsform.checkedList_con.CheckedItems)
+                foreach (string tag in Main.settings.options.checkedList_runparam_con)
                 {
                     if (tag=="Expiry date")
                     {
@@ -325,7 +325,7 @@ namespace Kbg.NppPluginNET
 
         internal static void ProcessXML()
         {
-            Kbg.NppPluginNET.Main.myDockableDialog();
+            Main.runparameters_disp();
 
             int xml_length = editor.GetTextLength();
             string xml_string = editor.GetText(xml_length + 1);
@@ -363,7 +363,7 @@ namespace Kbg.NppPluginNET
             };
             
             //Write header
-            foreach (string tag in Main.settingsform.checkedList_header.CheckedItems)
+            foreach (string tag in Main.settings.options.checkedList_runparam_header)
             {
                 write_info(tag, header_dict, true);
             }
@@ -374,7 +374,7 @@ namespace Kbg.NppPluginNET
             Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
 
             //Write additional info
-            foreach (string i in Main.settingsform.checkedList_additional.CheckedItems)
+            foreach (string i in Main.settings.options.checkedList_runparam_additional)
             {
                 write_info(i, add_info_dict[platformname], false);
             }
@@ -382,6 +382,7 @@ namespace Kbg.NppPluginNET
              //notepad.FileNew();
             //editor.SetText($"{parsed_flowcell.ToString()}");
         }
+
 
     }
 }

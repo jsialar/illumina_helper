@@ -1,6 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
 using System.Reflection;
-using System;
+using System.Windows.Forms;
 
 namespace Kbg.NppPluginNET
 {
@@ -8,45 +8,66 @@ namespace Kbg.NppPluginNET
         
     {
         public string runparameters_settings;
-        public SettingsForm(Settings.Options options_obj)
+        public SettingsForm(Settings.Options options)
         {
+            
             InitializeComponent();
-            //object options_obj = options;
-            foreach (FieldInfo field in options_obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            
+            foreach (FieldInfo form_field in this.GetType().GetFields())
             {
-
-                if (field.Name.StartsWith("checkedList"))
+                
+                if (form_field.Name.StartsWith("checkedList_runparam"))
                 {
-                    string[] items_array = (string[])field.GetValue(options_obj);
-                    System.Windows.Forms.CheckedListBox checkedlist_field = (System.Windows.Forms.CheckedListBox)this.GetType().GetField(field.Name).GetValue(this);
-                    foreach (string item in items_array)
-                    {
-                        int ind_to_check = checkedlist_field.Items.IndexOf(item);
-                        if (ind_to_check == -1)
-                        {
-                            continue;
-                        }
-                        checkedlist_field.SetItemChecked(ind_to_check, true);
-                    }
+                    System.Windows.Forms.CheckedListBox checkedlist_runparam = (System.Windows.Forms.CheckedListBox)form_field.GetValue(this);
+                    string[] checkeditems_array = (string[])options.GetType().GetField(form_field.Name).GetValue(options);
+                    settochecked(checkeditems_array, checkedlist_runparam);
+
+                }
+                else if (form_field.Name == "checkedList_finderror")
+                {
+                    System.Windows.Forms.CheckedListBox checkedlist_finderror = (System.Windows.Forms.CheckedListBox)form_field.GetValue(this);
+                    string[] allitems_array = (string[])options.GetType().GetField(form_field.Name+"_allitems").GetValue(options);
+                    string[] checkeditems_array = (string[])options.GetType().GetField(form_field.Name).GetValue(options);
+
+                    checkedList_finderror.Items.AddRange(allitems_array);
+                    settochecked(checkeditems_array, checkedlist_finderror);
 
                 }
 
             }
 
-            /*
-                  int[] runparameters_index=Array.ConvertAll(runparameters_settings.Split(','), Int32.Parse);
 
-                  foreach (int index in runparameters_index)
-                  {
-                      checkedList_additional.SetItemChecked(index, true);
-                  } 
-
-                  */
         }
 
+        void settochecked(string[] checkeditems_array, CheckedListBox checkedlist)
+        {
+            foreach (string item in checkeditems_array)
+            {
+                int ind_to_check = checkedlist.Items.IndexOf(item);
+                if (ind_to_check == -1)
+                {
+                    continue;
+                }
+                checkedlist.SetItemChecked(ind_to_check, true);
+            }
 
+        }
 
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(txtb_newexpression.Text))
+                return;
+            checkedList_finderror.Items.Add(txtb_newexpression.Text);
+            txtb_newexpression.Clear();
+            txtb_newexpression.Focus();
+        }
 
-
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            if (checkedList_finderror.Items.Count > 0)
+            {
+                checkedList_finderror.Items.RemoveAt(checkedList_finderror.SelectedIndex);
+            }
+        }
     }
 }
