@@ -56,10 +56,12 @@ namespace Kbg.NppPluginNET
 
             PluginBase.SetCommand(0, "Parse runparameters", parse_runparameters.ProcessXML, new ShortcutKey(false, false, false, Keys.None));
             PluginBase.SetCommand(1, "Find errors", Finderror.execute, new ShortcutKey(false, false, false, Keys.None));
+            PluginBase.SetCommand(6, "-", null);
             PluginBase.SetCommand(2, "Settings", process_settings);
-            PluginBase.SetCommand(3, "About", about);
+            PluginBase.SetCommand(6, "-", null);
+            PluginBase.SetCommand(4, "About", about);
             #if DEBUG
-            PluginBase.SetCommand(4, "debug", debug);
+            PluginBase.SetCommand(5, "debug", debug);
         #endif
             idMyDlg = 1;
         }
@@ -112,6 +114,16 @@ namespace Kbg.NppPluginNET
             
         }
 
+        internal static void close_dialogs()
+        {
+            Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_DMMHIDE, 0, frmMyDlg.Handle);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_MODELESSDIALOG, 1, frmMyDlg.Handle);
+
+            frmMyDlg.Dispose();
+            frmMyDlg = null;
+
+        }
+
         internal static void about()
         {
             string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -119,7 +131,7 @@ namespace Kbg.NppPluginNET
 
 Version {version}
 
-jsia1@illumina.com 2021
+Jaren Junren Sia 2021
 Illumina APJ-RIS
 ", "About");
         }
