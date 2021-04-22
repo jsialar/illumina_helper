@@ -73,7 +73,7 @@ namespace Kbg.NppPluginNET
             tbIcons.hToolbarBmp = tbBmp.GetHbitmap();
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(PluginBase.nppData._nppHandle, (uint) NppMsg.NPPM_ADDTOOLBARICON, PluginBase._funcItems.Items[0]._cmdID, pTbIcons);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, (uint) NppMsg.NPPM_ADDTOOLBARICON, PluginBase._funcItems.Items[1]._cmdID, pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
 
@@ -109,6 +109,10 @@ namespace Kbg.NppPluginNET
                     Finderror.execute();
                 }
                 
+            }
+            else
+            {
+                SynchronizationContext.SetSynchronizationContext(ctx1);
             }
             settingsform.Dispose();
             

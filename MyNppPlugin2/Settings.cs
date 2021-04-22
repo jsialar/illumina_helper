@@ -77,7 +77,7 @@ namespace Kbg.NppPluginNET
             options.checkedList_runparam_header = new[] { "Platform", "RunID", "ExperimentName", "StartDate" };
             options.checkedList_runparam_con = new[] { "Part#", "Lot#", "Expiry date" };
             options.checkedList_runparam_additional = new[] { "Control software version" };
-            options.checkedList_finderror = new[] { "FATAL", "\\sERR\\s", "\\sERROR", "\\sError", "\\serror" };
+            options.checkedList_finderror = new[] { "FATAL", "\\sERR\\s", "\\sERROR", "\\sError", "\\serror"};
             options.checkedList_finderror_allitems = options.checkedList_finderror;
 
         }

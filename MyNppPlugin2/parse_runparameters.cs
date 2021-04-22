@@ -318,7 +318,8 @@ namespace Kbg.NppPluginNET
             }
             Main.frmMyDlg.parsedText.AppendText("Expiry date: ");
             Main.frmMyDlg.parsedText.SelectionColor = textcolor;
-            Main.frmMyDlg.parsedText.AppendText(expiry_date.ToString("dd-MMM-yyyy"));
+            string exp_data_string = daystoexpiry < 0 ? expiry_date.ToString("dd-MMM-yyyy") + " (expired)" : expiry_date.ToString("dd-MMM-yyyy");
+            Main.frmMyDlg.parsedText.AppendText(exp_data_string);
             //Main.frmMyDlg.parsedText.AppendText($"{daystoexpiry.ToString()} days {preposition} expiry");
             Main.frmMyDlg.parsedText.AppendText(Environment.NewLine);
         }
