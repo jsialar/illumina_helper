@@ -69,5 +69,23 @@ namespace Kbg.NppPluginNET
                 checkedList_finderror.Items.RemoveAt(checkedList_finderror.SelectedIndex);
             }
         }
+
+        private void toggleall_Click(object sender, EventArgs e)
+        {
+            if (checkedList_finderror.CheckedIndices.Count > 0)
+            {
+                for (int i = 0; i < checkedList_finderror.Items.Count; i++)
+                {
+                    checkedList_finderror.SetItemChecked(i, false);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < checkedList_finderror.Items.Count; i++)
+                {
+                    checkedList_finderror.SetItemChecked(i, true);
+                }
+            }
+        }
     }
 }

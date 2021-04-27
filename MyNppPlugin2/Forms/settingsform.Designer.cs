@@ -50,6 +50,7 @@ namespace Kbg.NppPluginNET
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.Cancel = new System.Windows.Forms.Button();
             this.ok = new System.Windows.Forms.Button();
+            this.toggleall_btn = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.Runparameters_tab.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -206,6 +207,7 @@ namespace Kbg.NppPluginNET
             this.tabPage2.Controls.Add(this.finerrortitle);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.btnRemove);
+            this.tabPage2.Controls.Add(this.toggleall_btn);
             this.tabPage2.Controls.Add(this.btnAdd);
             this.tabPage2.Controls.Add(this.checkedList_finderror);
             this.tabPage2.Controls.Add(this.txtb_newexpression);
@@ -267,6 +269,7 @@ namespace Kbg.NppPluginNET
             // 
             // checkedList_finderror
             // 
+            this.checkedList_finderror.CheckOnClick = true;
             this.checkedList_finderror.FormattingEnabled = true;
             this.checkedList_finderror.Location = new System.Drawing.Point(57, 84);
             this.checkedList_finderror.Name = "checkedList_finderror";
@@ -317,6 +320,16 @@ namespace Kbg.NppPluginNET
             this.ok.Text = "Ok";
             this.ok.UseVisualStyleBackColor = true;
             // 
+            // toggleall_btn
+            // 
+            this.toggleall_btn.Location = new System.Drawing.Point(216, 347);
+            this.toggleall_btn.Name = "toggleall_btn";
+            this.toggleall_btn.Size = new System.Drawing.Size(85, 30);
+            this.toggleall_btn.TabIndex = 2;
+            this.toggleall_btn.Text = "Toggle all";
+            this.toggleall_btn.UseVisualStyleBackColor = true;
+            this.toggleall_btn.Click += new System.EventHandler(this.toggleall_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -363,5 +376,6 @@ namespace Kbg.NppPluginNET
         private System.Windows.Forms.Button btnAdd;
         public System.Windows.Forms.CheckedListBox checkedList_finderror;
         private System.Windows.Forms.TextBox txtb_newexpression;
+        private System.Windows.Forms.Button toggleall_btn;
     }
 }
