@@ -24,7 +24,7 @@ namespace Kbg.NppPluginNET
         static Icon tbIcon = null;
         static IScintillaGateway editor = new ScintillaGateway(PluginBase.GetCurrentScintilla());
        
-        //static INotepadPPGateway notepad = new NotepadPPGateway();
+        static INotepadPPGateway notepad = new NotepadPPGateway();
 
         public static void OnNotification(ScNotification notification)
         {

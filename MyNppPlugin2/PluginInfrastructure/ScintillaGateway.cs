@@ -24,6 +24,7 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         public ScintillaGateway(IntPtr scintilla)
         {
             this.scintilla = scintilla;
+            this.ScrollCaretCentred(); //Set Caret policy to centering
         }
 
         public int GetSelectionLength()
@@ -286,7 +287,9 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         public void GotoLine(int line)
         {
             Win32.SendMessage(scintilla, SciMsg.SCI_GOTOLINE, (IntPtr) line, (IntPtr) Unused);
+            this.ScrollCaretCentred();
         }
+
 
         /// <summary>Set caret to a position and ensure it is visible. (Scintilla feature 2025)</summary>
         public void GotoPos(int caret)
@@ -3327,6 +3330,14 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         /// The exclusion zone is given in pixels.
         /// (Scintilla feature 2402)
         /// </summary>
+        /// 
+        public void ScrollCaretCentred()
+        {
+            this.SetYCaretPolicy(CaretPolicy.JUMPS | CaretPolicy.EVEN, 0);
+            this.SetXCaretPolicy(CaretPolicy.JUMPS | CaretPolicy.EVEN, 0);
+         
+        }
+
         public void SetXCaretPolicy(CaretPolicy caretPolicy, int caretSlop)
         {
             Win32.SendMessage(scintilla, SciMsg.SCI_SETXCARETPOLICY, (IntPtr) caretPolicy, (IntPtr) caretSlop);
