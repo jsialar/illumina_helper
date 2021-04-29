@@ -262,7 +262,7 @@ namespace Kbg.NppPluginNET
             return startdate;
         }
 
-        static string get_platformname()
+        static (string, string) get_platformname()
         {
             
             string get_platform(string app_name)
@@ -271,9 +271,20 @@ namespace Kbg.NppPluginNET
             }
             XmlNode platformnode = doc.SelectSingleNode("//Application") ?? doc.SelectSingleNode("//ApplicationName");
             if (platformnode == null)
-            { return null; }
+            { return (null, null); }
             string applicationname = get_platform(platformnode.InnerText);
+            string dx_tag;
+            if (applicationname.Substring(applicationname.Length - 2, 2) == "Dx")
+            {
+                dx_tag = "Dx";
+                applicationname = applicationname.Substring(0, applicationname.Length - 2);
+            }
+            else
+            {
+                dx_tag = "";
+            }
 
+            
             if (applicationname== "NextSeq")
             {
                 if (doc.SelectSingleNode("/RunParameters/FocusMethod") != null) //Nextseq500
@@ -281,7 +292,7 @@ namespace Kbg.NppPluginNET
                 else
                 { applicationname += " 1000/2000";}
             }
-            return applicationname;
+            return (applicationname, dx_tag);
         }
 
         static string Getstring(this XmlDocument xmlDocument, string xpath)
@@ -343,7 +354,7 @@ namespace Kbg.NppPluginNET
                 return;
             }
             
-            string platformname = get_platformname();
+            (string platformname, string dx_tag) = get_platformname();
             if (platformname ==null)
             {
                 Main.frmMyDlg.parsedText.Clear();
@@ -357,7 +368,7 @@ namespace Kbg.NppPluginNET
 
             var header_dict = new Dictionary<string, string>
             {
-                {"Platform", platformname},
+                {"Platform", platformname+dx_tag},
                 {"RunID", doc.SelectSingleNode(runid_path).InnerText},
                 {"ExperimentName", doc.SelectSingleNode("/RunParameters/ExperimentName").InnerText},
                 {"StartDate",  parsed_start_date.ToString("dd-MMM-yyyy")}

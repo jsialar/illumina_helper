@@ -19,9 +19,7 @@ namespace Kbg.NppPluginNET
 
         private void findresults_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
-            int index = listbox_findresults.SelectedIndex;
-            if (index != -1)
+            if (Finderror.foundpos_l.Count > 0)            
             {
                 int linepos = Finderror.foundpos_l[listbox_findresults.SelectedIndex];
                 Finderror.editor.GotoLine(linepos);
