@@ -36,6 +36,7 @@ namespace Kbg.NppPluginNET
             foundpos_l.Clear();
             foundstring_l.Clear();
             int foundline;
+            int nextpos;
             int cpmin = 0;
             int cpmax = editor.GetLength();
             string searchstring = Main.settings.options.checkedList_finderror_str;
@@ -58,7 +59,8 @@ namespace Kbg.NppPluginNET
                         foundline = editor.LineFromPosition(foundpos);
                         foundpos_l.Add(foundline);
                         foundstring_l.Add(editor.GetLine(foundline));
-                        ttf.chrg = new CharacterRange(foundpos + 1, cpmax);
+                        nextpos = editor.GetLineEndPosition(foundline);
+                        ttf.chrg = new CharacterRange(nextpos, cpmax);
                     }
                     else
                     {
